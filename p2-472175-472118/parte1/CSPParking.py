@@ -1,4 +1,6 @@
 from constraint import *
+from pprint import pprint
+import time
 import sys
 import os
 
@@ -39,40 +41,51 @@ print("Cargadores: ", cargadores, "\n")
 
 problem.addVariables(coches, plazas)
 
+
 # Crea las restricciones
-# Cada coche tiene que tener una plaza distinta
+# La primera restricción es el comportamiento por defecto en python-constraints
+
+# 2. Cada coche tiene que tener una plaza distinta
 problem.addConstraint(AllDifferentConstraint(), coches)
 
-# Cada coche solo puede tener una plaza
-# problem.addConstraint(ExactSumConstraint(1), coches)
 
-# Cada coche con congelador, tiene que tener una conexión eléctrica en su plaza
+
+# 3. Cada coche con congelador, tiene que tener una conexión eléctrica en su plaza
 print("Coches con congelador: ", [coche for coche in coches if coche[-1] == "C"])
 for coche in coches:
     if coche[-1] == "C":
         problem.addConstraint(lambda plaza: plaza in cargadores, [coche])
 
 
-# Vehículos de tipo TSU no pueden tener delante un vehículo de tipo TNU. 
+# 4. Vehículos de tipo TSU no pueden tener delante un vehículo de tipo TNU. 
 # Vamos, que la segunda coordenada de la plaza del TSU tiene que ser menor que la del TNU
 for i in range(0, len(coches)):
     for j in range(i + 1, len(coches)):
-        if coches[i][3] == "T" and coches[j][3] == "N":
-            problem.addConstraint(lambda plaza1, plaza2: int(plaza1[1]) < int(plaza2[1]), [coches[i], coches[j]])
+        if coches[i][3] == "S" and coches[j][3] == "N":
+            problem.addConstraint(lambda plaza1, plaza2:
+                                   int(plaza1[1]) > int(plaza2[1]) if (plaza1[0]==plaza2[0]) else True,
+                                     [coches[i], coches[j]])
 
 
-# Por cuestiones de maniobrabilidad dentro del parking todo vehículo debe tener libre una plaza a izquierda
+# 5. Por cuestiones de maniobrabilidad dentro del parking todo vehículo debe tener libre una plaza a izquierda
 # o derecha (mirando en direcci´on a la salida). Por ejemplo, si un veh´ıculo ocupa la plaza 3.3 no podrá tener
 # aparcado un vehículo en la 2.3 y otro en la 4.3, al menos una de esas dos plazas deber´a quedar libre.
 for i in range(0, len(coches)):
     for j in range(i + 1, len(coches)):
-        problem.addConstraint(lambda plaza1, plaza2: int(abs(int(plaza1[0]) - int(plaza2[0]))) >= 2, [coches[i], coches[j]])
+        problem.addConstraint(lambda plaza1, plaza2:
+                               abs(int(plaza1[0]) - int(plaza2[0])) > 1 if (plaza1[1]==plaza2[1]) else True,
+                                 [coches[i], coches[j]])
 
+a = time.time()
+# Resuelve el problema
 solutions = problem.getSolutions()
-print("Solutions: ", solutions, "\n")
-
-
+#pprint(solutions)
+b = time.time()
+print("Tiempo de ejecución: ", b - a, "\n")
+print("Soluciones: ", problem.getSolutions().__len__(), "\n")
 exit()
+
+
 nombre_archivo = str(ruta_parking)
 
 # Generar el nombre del archivo de salida
