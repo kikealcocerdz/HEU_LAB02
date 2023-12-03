@@ -46,7 +46,7 @@ problem.addVariables(coches, plazas)
 # La primera restricción es el comportamiento por defecto en python-constraints
 
 # 2. Cada coche tiene que tener una plaza distinta
-problem.addConstraint(AllDifferentConstraint(), coches)
+problem.addConstraint(AllDifferentConstraint())
 
 
 
@@ -60,7 +60,7 @@ for coche in coches:
 # 4. Vehículos de tipo TSU no pueden tener delante un vehículo de tipo TNU. 
 # Vamos, que la segunda coordenada de la plaza del TSU tiene que ser menor que la del TNU
 for i in range(0, len(coches)):
-    for j in range(i + 1, len(coches)):
+    for j in range(0, len(coches)):
         if coches[i][3] == "S" and coches[j][3] == "N":
             problem.addConstraint(lambda plaza1, plaza2:
                                    int(plaza1[1]) > int(plaza2[1]) if (plaza1[0]==plaza2[0]) else True,
@@ -69,20 +69,63 @@ for i in range(0, len(coches)):
 
 # 5. Por cuestiones de maniobrabilidad dentro del parking todo vehículo debe tener libre una plaza a izquierda
 # o derecha (mirando en direcci´on a la salida). Por ejemplo, si un veh´ıculo ocupa la plaza 3.3 no podrá tener
-# aparcado un vehículo en la 2.3 y otro en la 4.3, al menos una de esas dos plazas deber´a quedar libre.
+# aparcado un vehículo en la 2.3 y otro en la 4.3, al menos una de esas dos plazas deberá quedar libre.
+
+def comprueba(plaza1: str, plaza2: str, plaza3: str) -> bool:
+    if plaza1[0] == 1 or plaza1[0] == filas:
+        if abs(int(plaza1[0]) - int(plaza2[0])) == 1 or abs(int(plaza1[0]) - int(plaza3[0])) == 1:
+            return False
+        
+    if abs(int(plaza1[0]) - int(plaza2[0])) == 1 and abs(int(plaza1[0]) - int(plaza3[0])) == 1:
+        if (plaza1[1] == plaza2[1]) and (plaza1[1] == plaza3[1]) and (plaza2[1] == plaza3[1]):
+            return False
+
+    return True
+    
+        
+    """if plaza1[1] != plaza2[1] or plaza1[1] != plaza3[1]:
+        return True
+    
+    if int(plaza1[0]) == 1 or int(plaza1[0]) == filas:
+        if abs(int(plaza2[0]) - int(plaza1[0])) == 1 or abs(int(plaza3[0]) - int(plaza1[0])) == 1:
+            return False
+
+    
+    
+    if abs(int(plaza1[0]) - int(plaza2[0])) == 1 and abs(int(plaza1[0]) - int(plaza3[0])) == 1:
+        return False
+
+    return True
+
+    if plaza1[1] != plaza2[1] :
+        return True
+    if int(plaza1[0]) == 1 or int(plaza1[0]) == filas:
+        if abs(int(plaza2[0]) - int(plaza1[0])) == 1:
+            return False
+        if abs(int(plaza3[0]) - int(plaza1[0])) == 1:
+            return False
+
+    if abs(int(plaza1[0]) - int(plaza2[0])) == 1 and abs(int(plaza1[0]) - int(plaza3[0])) == 1:
+        return False
+    
+    return True"""
+
+
+
 for i in range(0, len(coches)):
-    for j in range(i + 1, len(coches)):
-        problem.addConstraint(lambda plaza1, plaza2:
-                               abs(int(plaza1[0]) - int(plaza2[0])) > 1 if (plaza1[1]==plaza2[1]) else True,
-                                 [coches[i], coches[j]])
+    for j in range(0, len(coches)):
+        for k in range(0, len(coches)):
+            if i != j and i != k and j != k:
+                problem.addConstraint(comprueba, [coches[i], coches[j], coches[k]])
 
 a = time.time()
 # Resuelve el problema
+print("Resuelve el problema")
 solutions = problem.getSolutions()
 #pprint(solutions)
 b = time.time()
 print("Tiempo de ejecución: ", b - a, "\n")
-print("Soluciones: ", problem.getSolutions().__len__(), "\n")
+print("Soluciones: ", solutions.__len__(), "\n")
 exit()
 
 
