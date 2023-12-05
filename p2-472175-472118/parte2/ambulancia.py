@@ -111,49 +111,39 @@ def main():
     path = astar(maze, start, end)
     print(path)
 
-main()
+#main()
 
 
 data = pd.read_csv('mapa.csv', sep=';', header=None)
 
-no_transitables = []
-no_contagiosos = []
-contagiosos = []
-aten_contagiosos = []
-aten_regulares = []
-coste_2 = []
-coste_1 = []
+print(data)
+
 filas = len(data)
 columnas = len(data[0])
 
-for i in range(len(data)):
-    for j in range(len(data[0])):
-        if data[i][j] == 'P':
-            starting_point = (i+1, j+1)
-        elif data[i][j] == 'X':
-            no_transitables.append((i+1, j+1))
-        elif data[i][j] == 'C':
-            contagiosos.append((i+1, j+1))
-        elif data[i][j] == 'N':
-            no_contagiosos.append((i+1, j+1))
-        elif data[i][j] == '2':
-            coste_2.append((i+1, j+1))
-        elif data[i][j] == 'CC':
-            aten_contagiosos.append((i+1, j+1))
-        elif data[i][j] == 'CN':
-            aten_regulares.append((i+1, j+1))
-        else:
-            coste_1.append((i+1, j+1))
+def get_data(data: pd.DataFrame):
+    result = {}
+    """for i in ['P', 'X', 'C', 'N', 'CC', 'CN', '1', '2']:
+        result[i] = []
+    v = result.keys()"""
+    
+    for i in range(len(data)):
+        for j in range(len(data[0])):
+            key = data[i][j]
+            if result.get(key):
+                result[key].append((i+1, j+1)) 
+                continue
+            result[key] = [(i+1, j+1)]
+            
+    return result
 
 print('Filas: ', filas, '\tColumnas: ', columnas)
-print('Punto de partida: ', starting_point)
-print('No transitables: ', no_transitables)
-print('Contagiosos: ', contagiosos)
-print('No contagiosos: ', no_contagiosos)
-print('Atencion contagiosos: ', aten_contagiosos)
-print('Atencion regulares: ', aten_regulares)
-print('Coste 2: ', coste_2)
-print('Coste 1: ', coste_1)
+
+data_map = get_data(data)
+for key in data_map:
+    print(key, ": ", data_map[key])
+    globals()[key] = data_map[key]
+
 
 
 

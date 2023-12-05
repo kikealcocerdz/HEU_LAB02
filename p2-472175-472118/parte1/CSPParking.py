@@ -61,7 +61,7 @@ for coche in coches:
 # Vamos, que la segunda coordenada de la plaza del TSU tiene que ser menor que la del TNU
 for i in range(0, len(coches)):
     for j in range(0, len(coches)):
-        if coches[i][3] == "S" and coches[j][3] == "N":
+        if "S" in coches[i] and "N" in coches[j]:
             problem.addConstraint(lambda plaza1, plaza2:
                                    int(plaza1[1]) > int(plaza2[1]) if (plaza1[0]==plaza2[0]) else True,
                                      [coches[i], coches[j]])
