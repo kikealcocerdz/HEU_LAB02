@@ -1,8 +1,33 @@
 from constraint import *
 from pprint import pprint
+import pandas as pd
 import time
+import random
 import sys
 import os
+
+
+def escribe_sol(num_sol, solucion):
+    parking = {}
+    for i in range(1, filas+1):
+        for j in range(1, columnas+1):
+            parking[(i,j)] = "-"
+    solution_cars = [[value[0], value[1], key] for key, value in solucion.items()]
+
+    for car in solution_cars:
+        row, col, car_id = car
+        parking[(row, col)] = car_id
+    
+    resultado = ""
+    for i in range(1, filas+1):
+        for j in range(1, columnas+1):
+            resultado += f"\"{parking[(i,j)]}\","
+        resultado = resultado[:-1]
+        resultado += "\n"
+    return resultado
+
+
+
 
 ruta_parking = sys.argv[1]
 
@@ -16,14 +41,13 @@ with open(ruta_parking, 'r') as archivo:
     # Número de coches para meter en el parking
     num_coches = len(coches) 
     matriz = lineas[0].split("x")
+    global filas, columnas
     filas = int(matriz[0]) # Número de filas del parking
     columnas = int(matriz[1]) # Número de columnas del parking
 
-    cargadores = lineas[1][3:].split(") (")
-    cargadores[0] = cargadores[0][1:]
-    cargadores[-1] = cargadores[-1][:-1]
-    cargadores = [cargador.replace(",", "") for cargador in cargadores] # Posiciones de los cargadores
-
+    cargadores = lineas[1].replace("PE:", "").replace(")", ")p").split("p")[:-1]
+    cargadores = [(int(cargador[1]), int(cargador[-2])) for cargador in cargadores]
+    
 
 
 # Un parking tiene sus aparcamientos numerados por filas y columnas, la columna 7 es la salida del garaje
@@ -31,14 +55,9 @@ with open(ruta_parking, 'r') as archivo:
 problem = Problem()
 
 # Crea una matriz de todas las plazas del parking disponibles, como elementos vacios de una lista de listas
-plazas = [[str(i)+str(j) for j in range(1, columnas + 1)] for i in range(1, filas + 1)]
-plazas = [plaza for linea in plazas for plaza in linea]
+plazas = [(i, j) for j in range(1, columnas + 1) for i in range(1, filas + 1)]
 
-# Crea el dominio
-print("Coches: ", coches, "\n")
-print("Plazas: ", plazas, "\n")
-print("Cargadores: ", cargadores, "\n")
-
+# Crea el dominio, asigna a cada coche todas las plazas posibles.
 problem.addVariables(coches, plazas)
 
 
@@ -51,10 +70,9 @@ problem.addConstraint(AllDifferentConstraint())
 
 
 # 3. Cada coche con congelador, tiene que tener una conexión eléctrica en su plaza
-print("Coches con congelador: ", [coche for coche in coches if coche[-1] == "C"])
-for coche in coches:
-    if coche[-1] == "C":
-        problem.addConstraint(lambda plaza: plaza in cargadores, [coche])
+# Toma solo los coches que tienen un congelador e itera por la lista
+for coche in [coche for coche in coches if coche[-1] == "C"]:
+    problem.addConstraint(lambda plaza: plaza in cargadores, [coche])
 
 
 # 4. Vehículos de tipo TSU no pueden tener delante un vehículo de tipo TNU. 
@@ -118,24 +136,24 @@ for i in range(0, len(coches)):
             if i != j and i != k and j != k:
                 problem.addConstraint(comprueba, [coches[i], coches[j], coches[k]])
 
-a = time.time()
-# Resuelve el problema
-print("Resuelve el problema")
+
+# Salida del programa
 solutions = problem.getSolutions()
-#pprint(solutions)
-b = time.time()
-print("Tiempo de ejecución: ", b - a, "\n")
-print("Soluciones: ", solutions.__len__(), "\n")
-exit()
+solutions_dictionary = [{v: k for k, v in solutions.items()} for solutions in solutions]
 
-
-nombre_archivo = str(ruta_parking)
 
 # Generar el nombre del archivo de salida
+nombre_archivo = str(ruta_parking)
 nombre_salida = os.path.splitext(nombre_archivo)[0] + ".csv"
 
 # Escribir los datos en el archivo de salida
 with open(nombre_salida, "w") as archivo:
-    # Escribir el número de soluciones encontradas
-    archivo.write("N. Sol:" + problem.getSolutions().__len__().__str__() + "\n")
+    archivo.write("N. Sol:" + solutions.__len__().__str__() + "\n")
+    # Escribir las soluciones encontradas
+    random_solution_indexes = [random.randint(0, solutions.__len__()) for _ in range(15)]
+    for solution in random_solution_indexes:
+        archivo.write(escribe_sol(solution, solutions[solution]))
+        archivo.write("\n")
+        
     
+print("Soluciones: ", solutions.__len__(), "\n")
