@@ -7,7 +7,7 @@ import sys
 import os
 
 
-def escribe_sol(num_sol, solucion):
+def escribe_sol(solucion):
     parking = {}
     for i in range(1, filas+1):
         for j in range(1, columnas+1):
@@ -19,10 +19,21 @@ def escribe_sol(num_sol, solucion):
         parking[(row, col)] = car_id
     
     resultado = ""
+    comas_ocupado = ","
+    comas_libre = ","
+    try:
+        if sys.argv[3] == "bonito":
+            comas_ocupado = "\t,\t"
+            comas_libre = "\t\t\t,\t"
+    except IndexError:
+        pass
     for i in range(1, filas+1):
         for j in range(1, columnas+1):
-            resultado += f"\"{parking[(i,j)]}\","
-        resultado = resultado[:-1]
+            if len(parking[(i,j)]) > 4: # Si hay coche
+                addition = f"\"{parking[(i,j)]}\"{comas_ocupado}"
+            else:
+                addition = f"\"{parking[(i,j)]}\"{comas_libre}"
+            resultado += addition
         resultado += "\n"
     return resultado
 
@@ -150,9 +161,13 @@ nombre_salida = os.path.splitext(nombre_archivo)[0] + ".csv"
 with open(nombre_salida, "w") as archivo:
     archivo.write("N. Sol:" + solutions.__len__().__str__() + "\n")
     # Escribir las soluciones encontradas
-    random_solution_indexes = [random.randint(0, solutions.__len__()) for _ in range(15)]
-    for solution in random_solution_indexes:
-        archivo.write(escribe_sol(solution, solutions[solution]))
+    try:
+        if sys.argv[2] == "todas":
+            solutions_indexes = [i for i in range(solutions.__len__())]
+    except IndexError:
+        solutions_indexes = [random.randint(0, solutions.__len__()) for _ in range(15)]
+    for solution in solutions_indexes:
+        archivo.write(escribe_sol(solutions[solution]))
         archivo.write("\n")
         
     
