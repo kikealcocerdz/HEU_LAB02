@@ -1,0 +1,3 @@
+/Users/edu/Documents/HEU_LAB02/p2-472175-472118/parte2.0/cmake-build-debug/CMakeFiles/parte2_0.dir
+/Users/edu/Documents/HEU_LAB02/p2-472175-472118/parte2.0/cmake-build-debug/CMakeFiles/edit_cache.dir
+/Users/edu/Documents/HEU_LAB02/p2-472175-472118/parte2.0/cmake-build-debug/CMakeFiles/rebuild_cache.dir

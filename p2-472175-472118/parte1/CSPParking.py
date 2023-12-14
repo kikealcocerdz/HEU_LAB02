@@ -85,6 +85,8 @@ for coche in [coche for coche in coches if coche[-1] == "C"]:
     problem.addConstraint(lambda plaza: plaza in cargadores, [coche])
 
 
+# 4. Vehículos de tipo TSU no pueden tener delante un vehículo de tipo TNU.
+# Vamos, que la segunda coordenada de la plaza del TSU tiene que ser menor que la del TNU
 def comprueba1(plaza1: tuple, plaza2: tuple) -> bool:
     if plaza1[0] == plaza2[0]:
         if plaza1[1] < plaza2[1]:
@@ -92,28 +94,9 @@ def comprueba1(plaza1: tuple, plaza2: tuple) -> bool:
     return True
 
 
-# 4. Vehículos de tipo TSU no pueden tener delante un vehículo de tipo TNU.
-# Vamos, que la segunda coordenada de la plaza del TSU tiene que ser menor que la del TNU
-for i in range(0, len(coches)):
-    for j in range(0, len(coches)):
-        if i < j:
-            if "S" in coches[i] and "N" in coches[j]:
-                problem.addConstraint(comprueba1, [coches[i], coches[j]])
-
-
 # 5. Por cuestiones de maniobrabilidad dentro del parking todo vehículo debe tener libre una plaza a izquierda
 # o derecha (mirando en direcci´on a la salida). Por ejemplo, si un veh´ıculo ocupa la plaza 3.3 no podrá tener
 # aparcado un vehículo en la 2.3 y otro en la 4.3, al menos una de esas dos plazas deberá quedar libre.
-
-def comprueba3(plaza1: tuple, plaza2: tuple, plaza3: tuple) -> bool:
-    if abs(int(plaza1[0]) - int(plaza2[0])) == 1 and abs(int(plaza1[0]) - int(plaza3[0])) == 1:
-        if (plaza1[1] == plaza2[1]) and (plaza2[1] == plaza3[1]):
-            return False
-    return True
-
-
-# 0 = Fila
-# 1 = Columna
 
 def comprueba2(plaza1: tuple, plaza2: tuple) -> bool:
     if int(plaza1[0]) == 1 or int(plaza1[0]) == filas:
@@ -121,39 +104,23 @@ def comprueba2(plaza1: tuple, plaza2: tuple) -> bool:
             if plaza1[1] == plaza2[1]:
                 return False
     return True
-    """if plaza1[1] != plaza2[1] or plaza1[1] != plaza3[1]:
-        return True
-    
-    if int(plaza1[0]) == 1 or int(plaza1[0]) == filas:
-        if abs(int(plaza2[0]) - int(plaza1[0])) == 1 or abs(int(plaza3[0]) - int(plaza1[0])) == 1:
-            return False
 
-    
-    
+
+def comprueba3(plaza1: tuple, plaza2: tuple, plaza3: tuple) -> bool:
+    print(plaza1, plaza2, plaza3)
     if abs(int(plaza1[0]) - int(plaza2[0])) == 1 and abs(int(plaza1[0]) - int(plaza3[0])) == 1:
-        return False
-
+        if (plaza1[1] == plaza2[1]) and (plaza2[1] == plaza3[1]):
+            return False
     return True
 
-    if plaza1[1] != plaza2[1] :
-        return True
-    if int(plaza1[0]) == 1 or int(plaza1[0]) == filas:
-        if abs(int(plaza2[0]) - int(plaza1[0])) == 1:
-            return False
-        if abs(int(plaza3[0]) - int(plaza1[0])) == 1:
-            return False
 
-    if abs(int(plaza1[0]) - int(plaza2[0])) == 1 and abs(int(plaza1[0]) - int(plaza3[0])) == 1:
-        return False
-    
-    return True"""
-
-
-for i in range(0, len(coches)):
-    for j in range(0, len(coches)):
+for i in range(len(coches)):
+    for j in range(len(coches)):
         if i != j:
+            if "S" in coches[i] and "N" in coches[j]:
+                problem.addConstraint(comprueba1, [coches[i], coches[j]])
             problem.addConstraint(comprueba2, [coches[i], coches[j]])
-            for k in range(0, len(coches)):
+            for k in range(len(coches)):
                 if i < k:
                     problem.addConstraint(comprueba3, [coches[i], coches[j], coches[k]])
 
