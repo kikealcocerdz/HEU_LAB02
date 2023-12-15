@@ -15,6 +15,7 @@ int main(int argc, char** argv) {
     return -1;
   }
   path_map = argv[1];
+  std::cout << "Mapa: " << path_map << std::endl;
   heuristic_sel = atoi(argv[2]);
   Mapa mapa = Mapa(path_map);
   mapa.print_info();

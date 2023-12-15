@@ -1,0 +1,6 @@
+/Users/edu/Documents/HEUFIN/HEU_LAB02/p2-472175-472118/parte2/build/CMakeFiles/main.dir
+/Users/edu/Documents/HEUFIN/HEU_LAB02/p2-472175-472118/parte2/build/CMakeFiles/edit_cache.dir
+/Users/edu/Documents/HEUFIN/HEU_LAB02/p2-472175-472118/parte2/build/CMakeFiles/rebuild_cache.dir
+/Users/edu/Documents/HEUFIN/HEU_LAB02/p2-472175-472118/parte2/build/C++Version/CMakeFiles/things.dir
+/Users/edu/Documents/HEUFIN/HEU_LAB02/p2-472175-472118/parte2/build/C++Version/CMakeFiles/edit_cache.dir
+/Users/edu/Documents/HEUFIN/HEU_LAB02/p2-472175-472118/parte2/build/C++Version/CMakeFiles/rebuild_cache.dir
