@@ -58,12 +58,18 @@ with open(ruta_parking, 'r') as archivo:
     cargadores = lineas[1].replace("PE:", "").replace(")", ")p").split("p")[:-1]
     cargadores = [(int(cargador[2]), int(cargador[-2])) for cargador in cargadores]
 
+print("Coches: ", coches)
+print("Filas: ", filas)
+print("Columnas: ", columnas)
+print("Cargadores: ", cargadores)
+
 # Un parking tiene sus aparcamientos numerados por filas y columnas, la columna 7 es la salida del garaje
 # Los vehiculos que aparcan en esto aparcamientos pueden ser de dos tipos, TSU y TNU
 problem = Problem()
 
 # Crea una matriz de todas las plazas del parking disponibles, como elementos vacios de una lista de listas
 plazas = [(i, j) for j in range(1, columnas + 1) for i in range(1, filas + 1)]
+print("Plazas: ", plazas)
 # Crea el dominio, asigna a cada coche todas las plazas posibles.
 problem.addVariables(coches, plazas)
 
@@ -101,6 +107,7 @@ def comprueba2(plaza1: tuple, plaza2: tuple) -> bool:
 
 
 def comprueba3(plaza1: tuple, plaza2: tuple, plaza3: tuple) -> bool:
+    print(plaza1, plaza2, plaza3)
     if abs(int(plaza1[0]) - int(plaza2[0])) == 1 and abs(int(plaza1[0]) - int(plaza3[0])) == 1:
         if (plaza1[1] == plaza2[1]) and (plaza2[1] == plaza3[1]):
             return False
