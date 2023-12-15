@@ -1,0 +1,2 @@
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ar qc libthings.a CMakeFiles/things.dir/Map_Reader.cpp.o CMakeFiles/things.dir/Search.cpp.o CMakeFiles/things.dir/Ambulance.cpp.o CMakeFiles/things.dir/A_star.cpp.o
+/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/ranlib libthings.a
