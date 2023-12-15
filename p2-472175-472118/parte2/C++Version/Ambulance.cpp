@@ -2,7 +2,7 @@
 // Created by sergio on 7/12/23.
 //
 #include "Ambulance.h"
-
+#include <algorithm>
 void Ambulance::initializate_data(std::vector<std::vector<char>> & data) {
   for (size_t i = 0; i < data.size(); i++) {
     std::vector<int> h_aux;
