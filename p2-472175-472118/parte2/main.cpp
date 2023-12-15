@@ -25,6 +25,9 @@ int main(int argc, char** argv) {
   int result = search.a_star(path_map, heuristic_sel);
   // Stop the timer
   auto duration = std::chrono::duration_cast<std::chrono::microseconds>(search.time_end - search.time_start);
+  // Write the stats file, with the name map_name_stats.txt
+  search.create_stats_file();
+  
   std::cout << "Tiempo total: " << duration.count() / 1000000 << " seconds with an ouput code: " << result << std::endl;
   return 0;
 }

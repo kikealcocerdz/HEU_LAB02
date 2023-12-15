@@ -454,3 +454,7 @@ void A_star::draw_passed_tides(std::vector<std::tuple<int, int>>& path)
   }
   std::cout << draw << '\n';
 }
+
+void A_star::create_stats_file() {
+
+}
